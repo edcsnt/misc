@@ -1,0 +1,5 @@
+#!/bin/sh
+# Copyright 2026 edcsnt. All rights reserved.
+
+len=$(wc -c <"$1")
+dd if=/dev/null of="$1" obs=$((len - 1)) seek=1

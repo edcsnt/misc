@@ -1,5 +1,6 @@
 #!/bin/sh
-# Copyright 2025 edcsnt. All rights reserved.
+# Copyright 2026 edcsnt. All rights reserved.
+
 dd if=/dev/zero of=in count=1175000 2>/dev/null
 for bs in 1k 2k 4k 8k 16k 32k 64k 128k 256k 512k 1M 2M 4M 8M
 do
