@@ -3,7 +3,7 @@
 
 case $1 in -n) w=0; shift; esac
 case $# in
-	0|1) printf 'usage: offset [-n] file function...\n' >&2; exit 1
+	[01]) printf 'usage: offset [-n] file function...\n' >&2; exit 1
 esac
 
 f=$1 s=''
