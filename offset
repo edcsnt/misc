@@ -1,22 +1,32 @@
 #!/bin/sh
 # Copyright 2026 edcsnt. All rights reserved.
 
-case $# in 0|1) printf 'usage: offset file function...\n' >&2; exit 1; esac
+case $1 in -n) w=0; shift; esac
+case $# in
+	0|1) printf 'usage: offset [-n] file function...\n' >&2; exit 1
+esac
 
-f=$1 s=
+f=$1 s=''
 export LC_ALL=C
 shift
+
+case $w in
+	?*)
+		for fn
+		do
+			case $((${#fn} > w)) in 1) w=${#fn}; esac
+		done
+esac
 
 for fn
 do
 	case $fn in
 		*[*./[\\]*)
-			esc=
-			while :
+			tmp=$fn esc=
+			while case $tmp in ?*) :;; *) false; esac
 			do
-				case $fn in '') break; esac
-				c=${fn%"${fn#?}"}
-				fn=${fn#?}
+				c=${tmp%"${tmp#?}"}
+				tmp=${tmp#?}
 				case $c in [*./[\\]) esc=$esc\\; esac
 				esc=$esc$c
 			done
@@ -24,7 +34,20 @@ do
 		*)
 			esc=$fn
 	esac
-	s="$s;s/^$esc [TtWw] \([^ ]*\).*/0x\1/p"
+	pad=
+	case $w in
+		?*)
+			while
+				case $((${#pad} < w - ${#fn})) in
+					1) :;;
+					*) false
+				esac
+			do
+				pad=$pad' '
+			done
+			pad=$fn$pad' '
+	esac
+	s="$s;s/^$esc [TtWw] \([^ ]*\).*/${pad}0x\1/p"
 done
 
 nm -P "$f" | sed -n "${s#;}"
