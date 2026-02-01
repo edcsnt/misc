@@ -6,7 +6,7 @@ case $# in
 	[01]) printf 'usage: offset [-n] file function...\n' >&2; exit 1
 esac
 
-f=$1 s=''
+f=$1
 export LC_ALL=C
 shift
 
@@ -34,7 +34,6 @@ do
 		*)
 			esc=$fn
 	esac
-	pad=
 	case $w in
 		?*)
 			while
