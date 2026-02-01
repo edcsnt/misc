@@ -1,0 +1,30 @@
+#!/bin/sh
+# Copyright 2026 edcsnt. All rights reserved.
+
+case $# in 0|1) printf 'usage: offset file function...\n' >&2; exit 1; esac
+
+f=$1 s=
+export LC_ALL=C
+shift
+
+for fn
+do
+	case $fn in
+		*[*./[\\]*)
+			esc=
+			while :
+			do
+				case $fn in '') break; esac
+				c=${fn%"${fn#?}"}
+				fn=${fn#?}
+				case $c in [*./[\\]) esc=$esc\\; esac
+				esc=$esc$c
+			done
+			;;
+		*)
+			esc=$fn
+	esac
+	s="$s;s/^$esc [TtWw] \([^ ]*\).*/0x\1/p"
+done
+
+nm -P "$f" | sed -n "${s#;}"
